@@ -18,12 +18,16 @@ const columnHelper = createColumnHelper<Person>();
 const columns = [
   columnHelper.accessor("id", {
     header: "ID", // header column label
+    cell: info => info.getValue(), // row cell - value
   }),
   columnHelper.accessor("name", {
     header: () => "NAME",
   }),
   columnHelper.accessor("phone", {
     header: () => <span className="underline">PHONE</span>,
+    cell: info => (
+      <span className="italic underline cursor-pointer">{info.getValue()}</span>
+    ),
   }),
   columnHelper.accessor("email", {
     header: "EMAIL",
@@ -62,6 +66,17 @@ function App() {
               </tr>
             ))}
           </thead>
+          <tbody className="bg-white divide-y divide-gray-100">
+            {getRowModel().rows.map(row => (
+              <tr key={row.id} className="hover:bg-gray-50">
+                {row.getVisibleCells().map(cell => (
+                  <td key={cell.id} className="px-4 py-3 text-sm text-gray-800">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
     </>
