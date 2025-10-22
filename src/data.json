@@ -3,42 +3,49 @@
     "id": 1,
     "name": "John Doe",
     "email": "johndoe@example.com",
-    "phone": "123-456-7890"
+    "phone": "123-456-7890",
+    "status": "relationship"
   },
   {
     "id": 2,
     "name": "Jane Smith",
     "email": "janesmith@example.com",
-    "phone": "987-654-3210"
+    "phone": "987-654-3210",
+    "status": "single"
   },
   {
     "id": 3,
     "name": "Michael Johnson",
     "email": "michaeljohnson@example.com",
-    "phone": "555-123-4567"
+    "phone": "555-123-4567",
+    "status": "complicated"
   },
   {
     "id": 4,
     "name": "Emily Wilson",
     "email": "emilywilson@example.com",
-    "phone": "999-888-7777"
+    "phone": "999-888-7777",
+    "status": "single"
   },
   {
     "id": 5,
     "name": "Daniel Lee",
     "email": "daniellee@example.com",
-    "phone": "444-555-6666"
+    "phone": "444-555-6666",
+    "status": "relationship"
   },
   {
     "id": 6,
     "name": "Olivia Martinez",
     "email": "oliviamartinez@example.com",
-    "phone": "777-999-1111"
+    "phone": "777-999-1111",
+    "status": "complicated"
   },
   {
     "id": 7,
     "name": "William Thompson",
     "email": "williamthompson@example.com",
-    "phone": "222-333-4444"
+    "phone": "222-333-4444",
+    "status": "single"
   }
 ]
