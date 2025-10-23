@@ -3,11 +3,18 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
   type SortingFn,
   type SortingState,
 } from "@tanstack/react-table";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import data from "./data.json";
 
@@ -60,7 +67,20 @@ function App() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
 
-  const { getHeaderGroups, getRowModel } = useReactTable({
+  const {
+    getHeaderGroups,
+    getRowModel,
+    getState,
+    setPageSize,
+    getPageCount,
+    setPageIndex,
+    nextPage,
+    getCanNextPage,
+    firstPage,
+    previousPage,
+    lastPage,
+    getCanPreviousPage,
+  } = useReactTable({
     data: tableData,
     columns,
     getCoreRowModel: getCoreRowModel(),
@@ -70,11 +90,15 @@ function App() {
     // sortingFns: {
     //   sortStatusFn, //or provide our custom sorting function globally for all columns to be able to use
     // },
-    onGlobalFilterChange: setGlobalFilter,
+    // onGlobalFilterChange: setGlobalFilter,
     getFilteredRowModel: getFilteredRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 2,
+      },
+    },
+    getPaginationRowModel: getPaginationRowModel(),
   });
-
-  console.log("🚀 ~ App ~ getRowModel:", getRowModel());
 
   return (
     <>
@@ -137,6 +161,80 @@ function App() {
             ))}
           </tbody>
         </table>
+        <div className="flex flex-col sm:flex-row justify-between items-center mt-4 text-sm text-gray-700">
+          <div className="flex items-center mb-4 sm:mb-0">
+            <span className="mr-2">Items per page</span>
+            <select
+              className="border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
+              value={getState().pagination.pageSize}
+              onChange={e => {
+                setPageSize(Number(e.target.value));
+              }}
+            >
+              {[2, 5, 10, 20, 30].map(pageSize => (
+                <option key={pageSize} value={pageSize}>
+                  {pageSize}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <button
+              className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
+              onClick={() => firstPage()}
+              disabled={!getCanPreviousPage()}
+            >
+              <ChevronsLeft size={20} />
+            </button>
+
+            <button
+              className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
+              onClick={() => previousPage()}
+              disabled={!getCanPreviousPage()}
+            >
+              <ChevronLeft size={20} />
+            </button>
+
+            <span className="flex items-center">
+              <input
+                min={1}
+                max={getPageCount()}
+                type="number"
+                value={getState().pagination.pageIndex + 1}
+                readOnly
+                onChange={e => {
+                  let page = 0;
+                  const value = Number(e.target.value);
+
+                  if (value && value <= getPageCount()) {
+                    page = Number(e.target.value) - 1;
+                  }
+
+                  setPageIndex(page);
+                }}
+                className="w-16 p-2 rounded-md border border-gray-300 text-center"
+              />
+              <span className="ml-1">of {getPageCount()}</span>
+            </span>
+
+            <button
+              className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
+              onClick={() => nextPage()}
+              disabled={!getCanNextPage()}
+            >
+              <ChevronRight size={20} />
+            </button>
+
+            <button
+              className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
+              onClick={() => lastPage()}
+              disabled={!getCanNextPage()}
+            >
+              <ChevronsRight size={20} />
+            </button>
+          </div>
+        </div>
       </div>
     </>
   );
