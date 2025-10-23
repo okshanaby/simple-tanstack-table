@@ -2,6 +2,7 @@ import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
   type SortingFn,
@@ -57,17 +58,20 @@ const columns = [
 function App() {
   const tableData: Person[] = useMemo(() => data, []);
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [globalFilter, setGlobalFilter] = useState("");
 
   const { getHeaderGroups, getRowModel } = useReactTable({
     data: tableData,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    state: { sorting },
+    state: { sorting, globalFilter },
     onSortingChange: setSorting, //optionally control sorting state in your own scope for easy access
     getSortedRowModel: getSortedRowModel(), //client-side sorting
     // sortingFns: {
     //   sortStatusFn, //or provide our custom sorting function globally for all columns to be able to use
     // },
+    onGlobalFilterChange: setGlobalFilter,
+    getFilteredRowModel: getFilteredRowModel(),
   });
 
   console.log("🚀 ~ App ~ getRowModel:", getRowModel());
@@ -75,6 +79,21 @@ function App() {
   return (
     <>
       <div className="max-w-3xl mx-auto bg-white rounded-md shadow-sm overflow-hidden">
+        <div className="p-4">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={globalFilter}
+            onChange={e => setGlobalFilter(e.target.value)}
+            className="w-full max-w-sm px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          <p className="mt-3 text-gray-600 text-sm">
+            Searching for:{" "}
+            <span className="font-medium">{globalFilter || "nothing yet"}</span>
+          </p>
+        </div>
+
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-100">
             {getHeaderGroups().map(headerGroup => (
